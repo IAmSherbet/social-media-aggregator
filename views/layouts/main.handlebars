@@ -1,0 +1,51 @@
+<html>
+<head>
+  <title>This is my site</title>
+</head>
+<body>
+  <script>
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId      : '470845099792435',
+        xfbml      : true,
+        version    : 'v2.6'
+      });
+      FB.getLoginStatus(function(response) {
+        if (response.status === 'connected') {
+            document.getElementById('status'). innerHTML = 'we are logged in.';
+          } else if (response.status === 'not_authorized') {
+            document.getElementById('status'). innerHTML = 'we are not logged in.';
+        }
+      });
+    };
+
+    (function(d, s, id){
+       var js, fjs = d.getElementsByTagName(s)[0];
+       if (d.getElementById(id)) {return;}
+       js = d.createElement(s); js.id = id;
+       js.src = "//connect.facebook.net/en_US/sdk.js";
+       fjs.parentNode.insertBefore(js, fjs);
+     }(document, 'script', 'facebook-jssdk'));
+
+     function login() {
+       FB.login(function(response){
+         if (response.status === 'connected') {
+             document.getElementById('status'). innerHTML = 'we are logged in.';
+           } else if (response.status === 'not_authorized') {
+             document.getElementById('status'). innerHTML = 'we are not logged in.';
+         }
+       });
+     };
+
+     function share() {
+       FB.ui(
+        {
+        method: 'share',
+        href: 'https://developers.facebook.com/docs/'
+        }, function(response){});
+     };
+
+  </script>
+  {{{ body }}}
+</body>
+</html>
