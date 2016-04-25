@@ -4,7 +4,8 @@
 </head>
 <body>
   <script>
-    window.fbAsyncInit = function() {
+  // initialize and setup facebook js sdk
+  window.fbAsyncInit = function() {
       FB.init({
         appId      : '470845099792435',
         xfbml      : true,
@@ -12,40 +13,60 @@
       });
       FB.getLoginStatus(function(response) {
         if (response.status === 'connected') {
-            document.getElementById('status'). innerHTML = 'we are logged in.';
-          } else if (response.status === 'not_authorized') {
-            document.getElementById('status'). innerHTML = 'we are not logged in.';
+          document.getElementById('status').innerHTML = 'We are connected.';
+          document.getElementById('login').style.visibility = 'hidden';
+        } else if (response.status === 'not_authorized') {
+          document.getElementById('status').innerHTML = 'We are not logged in.'
+        } else {
+          document.getElementById('status').innerHTML = 'You are not logged into Facebook.';
         }
       });
-    };
+  };
+  (function(d, s, id){
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) {return;}
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_US/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
 
-    (function(d, s, id){
-       var js, fjs = d.getElementsByTagName(s)[0];
-       if (d.getElementById(id)) {return;}
-       js = d.createElement(s); js.id = id;
-       js.src = "//connect.facebook.net/en_US/sdk.js";
-       fjs.parentNode.insertBefore(js, fjs);
-     }(document, 'script', 'facebook-jssdk'));
+  // login with facebook with extra permissions
+  function login() {
+    FB.login(function(response) {
+      if (response.status === 'connected') {
+          document.getElementById('status').innerHTML = 'We are connected.';
+          document.getElementById('login').style.visibility = 'hidden';
+        } else if (response.status === 'not_authorized') {
+          document.getElementById('status').innerHTML = 'We are not logged in.'
+        } else {
+          document.getElementById('status').innerHTML = 'You are not logged into Facebook.';
+        }
+    }, {scope: 'user_posts'});
+  }
 
-     function login() {
-       FB.login(function(response){
-         if (response.status === 'connected') {
-             document.getElementById('status'). innerHTML = 'we are logged in.';
-           } else if (response.status === 'not_authorized') {
-             document.getElementById('status'). innerHTML = 'we are not logged in.';
-         }
-       });
-     };
+  // getting basic user info
+  function getInfo() {
+    FB.api('/me', 'GET', {fields: 'first_name,last_name,name,id,email'},
+      function(response) {
+      document.getElementById('status').innerHTML = response.id;
+    });
+  }
 
-     function share() {
-       FB.ui(
-        {
-        method: 'share',
-        href: 'https://developers.facebook.com/docs/'
-        }, function(response){});
-     };
+  function getFeed() {
+    FB.api('/me/posts', 'GET', {fields: 'id, link, message, picture'},
+    function(response) {
+      console.log(response);
+      //document.getElementById('posts').innerHTML = response.message;
+    });
+  }
 
-  </script>
+  function logout() {
+    FB.logout(function(response) {
+
+    });
+  }
+
+</script>
   {{{ body }}}
 </body>
 </html>
